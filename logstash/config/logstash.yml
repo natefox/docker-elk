@@ -4,3 +4,7 @@
 #
 http.host: "0.0.0.0"
 path.config: /usr/share/logstash/pipeline
+
+queue.type: persisted
+queue.drain: true
+# queue.max_bytes: 1gb
