@@ -28,6 +28,7 @@ services:
     ports:
       - "5000:5000"
       - "9600:9600"
+      - "9601:9601"
     environment:
       LS_JAVA_OPTS: "-Xmx256m -Xms256m"
     networks:
@@ -49,7 +50,39 @@ services:
     depends_on:
       - elasticsearch
 
-networks:
 
+  fluentd:
+    build:
+      context: fluentd/
+    ports:
+      - "24224:24224"
+    networks:
+      - elk
+    depends_on:
+      - "elasticsearch"
+    volumes:
+      - ./fluentd/etc:/fluentd/etc
+      # - ./nginx/logs:/var/log
+
+
+  nginx:
+    image: nginx
+    ports:
+      - "8080:80"
+    networks:
+      - elk
+    volumes:
+      - ./nginx/html:/usr/share/nginx/html
+      # - ./nginx/logs:/var/log/nginx
+    logging:
+      driver: fluentd
+      options:
+        fluentd-address: localhost:24224
+        tag: httpd.access
+    depends_on:
+      - "fluentd"
+
+
+networks:
   elk:
     driver: bridge
