@@ -62,7 +62,6 @@ services:
       - "elasticsearch"
     volumes:
       - ./fluentd/etc:/fluentd/etc
-      # - ./nginx/logs:/var/log
 
 
   nginx:
@@ -73,7 +72,6 @@ services:
       - elk
     volumes:
       - ./nginx/html:/usr/share/nginx/html
-      # - ./nginx/logs:/var/log/nginx
     logging:
       driver: fluentd
       options:
